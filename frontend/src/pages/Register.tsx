@@ -32,8 +32,7 @@ const Register = () => {
         }
     })
     const onSubmit = handleSubmit((data)=>{
-        mutation.mutate(data);
-        
+        mutation.mutate(data);      
     });
     return (
         <form className="flex flex-col gap-5" onSubmit={onSubmit}>
