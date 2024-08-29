@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser"
 import path from "path"
 import {v2 as cloudinary} from 'cloudinary'
 import myHotelRoutes from './routes/my-hotels'
+import hotelRoutes from './routes/hotels'
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -42,6 +43,7 @@ app.get("/api/test", async(req: Request, res: Response)=>{
 app.use("/api/auth", authRouter)
 app.use("/api/users", userRouter)
 app.use("/api/my-hotels", myHotelRoutes)
+app.use("/api/hotels", hotelRoutes)
 
 //used while deploying code 
 // app.get("*", (req: Request, res: Response)=>{
