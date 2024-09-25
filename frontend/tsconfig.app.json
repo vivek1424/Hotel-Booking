@@ -23,5 +23,9 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
+  "files": [
+    "d:/Projects/mern-booking-app/backend/src/models/hotel.ts"
+  ],
+
   "include": ["src"]
 }

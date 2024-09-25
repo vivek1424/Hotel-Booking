@@ -4,6 +4,8 @@ import TypeSection from "./TypeSection";
 import FacilitiesSection from "./FacilitiesSection";
 import GuestSection from "./GuestSection";
 import ImagesSection from "./ImagesSection";
+import { HotelType } from "../../../../backend/src/shared/types";
+import { useEffect } from "react";
 
 export type HotelFormData = {
     _id: string;
@@ -19,16 +21,17 @@ export type HotelFormData = {
     pricePerNight: number;
     starRating: number;
     imageFiles: FileList;
-
+    imageUrls: string[]
 }
 
 type Props = { 
+    hotel?: HotelType;
     onSave: (hotelFormData : FormData)=>void; 
     isLoading: boolean
     
 };
 
-const ManageHotelForm = ({onSave, isLoading}: Props) => {
+const ManageHotelForm = ({onSave, isLoading, hotel}: Props) => {
     const formMethods = useForm<HotelFormData>(
         {
             defaultValues: {
@@ -46,10 +49,22 @@ const ManageHotelForm = ({onSave, isLoading}: Props) => {
             },
           }
     );
-    const {handleSubmit} =formMethods;
+    const {handleSubmit, reset} =formMethods;
+
+    //reset whenever there is call of reset or change in the form (hotel)
+
+    useEffect(() => {
+      reset(hotel);
+    }, [hotel, reset])
+    
+
     const onSubmit =handleSubmit((formDataJson: HotelFormData)=>{
         const formData = new FormData(); //this is inbuilt js method - allows to create object having key value pair 
-        //used for multi-part data storage 
+        //used for multi-part data storage
+        //if in the props, hotel is passed, then hotel Id should be part of the form data  
+        if(hotel){
+            formData.append("hotelId", hotel._id)
+        }
         formData.append("name", formDataJson.name);
         formData.append("city", formDataJson.city);
         formData.append("country", formDataJson.country);
@@ -65,6 +80,13 @@ const ManageHotelForm = ({onSave, isLoading}: Props) => {
             formData.append(`facilities[${index}]`,facility);
         })
 
+        //if the deletion of the old images takes plac, then we need to overwrite the imageURL array 
+        if(formDataJson.imageUrls){
+            formDataJson.imageUrls.forEach((url, index)=>{
+                formData.append(`imageUrls[${index}]`, url)
+            })
+        }
+        
         //convert the image Files into array first since it is of the type file list 
         Array.from(formDataJson.imageFiles).forEach((imageFile)=>{
             formData.append(`imageFiles`, imageFile);            
